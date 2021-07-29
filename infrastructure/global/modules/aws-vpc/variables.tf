@@ -1,11 +1,14 @@
 variable "cidr_block" {
-  type = string
-  default = "10.0.0.0/16"
+  type    = string
 }
 
 variable "project_name" {
-  type = string
-  default = "terraform-kittens-store"
+  type    = string
+}
+
+variable "subnets_number" {
+  type    = number
+  default = 2
 }
 
 data "aws_availability_zones" "available" {

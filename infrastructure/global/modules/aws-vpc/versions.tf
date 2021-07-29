@@ -10,8 +10,3 @@ terraform {
     }
   }
 }
-
-provider "aws" {
-  profile = "devops_bootcamp"
-  region = "us-west-2"
-}
