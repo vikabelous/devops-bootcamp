@@ -1,10 +1,10 @@
 resource "aws_key_pair" "terraform-key-pair" {
-  key_name_prefix = "terraform"
+  key_name_prefix = "terraform-"
   public_key      = var.ssh_key_pub
 }
 
 resource "aws_security_group" "terraform-ec2" {
-  name_prefix = "allow_ssh_http"
+  name_prefix = "allow_ssh_http-"
   description = "Allow SSH and HTTP inbound traffic"
   vpc_id      = var.vpc_id
 
@@ -48,8 +48,10 @@ resource "aws_instance" "terraform-instance" {
 
   key_name                    = aws_key_pair.terraform-key-pair.key_name
   associate_public_ip_address = true
-  vpc_security_group_ids      = [aws_security_group.terraform-ec2.id]
+  vpc_security_group_ids      = concat([aws_security_group.terraform-ec2.id], var.assigned_security_groups)
   subnet_id                   = var.subnet_id
+
+  user_data = var.user_data
 
   lifecycle {
     ignore_changes = [
