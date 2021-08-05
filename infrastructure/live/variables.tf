@@ -36,6 +36,9 @@ locals {
   project_name = data.terraform_remote_state.global.outputs.project_name
   vpc_id = data.terraform_remote_state.global.outputs.vpc_id
   subnet_ids = data.terraform_remote_state.global.outputs.subnet_ids
+
+  instances_number = 6
+
   vpc = {
     vpc_id = local.vpc_id
     subnet_ids = local.subnet_ids

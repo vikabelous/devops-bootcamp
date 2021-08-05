@@ -3,9 +3,9 @@ output "id" {
 }
 
 output "subnet_ids" {
-  value = aws_subnet.terraform-subnets.*.id
+  value = [for sub_net in aws_subnet.terraform-subnets : sub_net.id]
 }
 
 output "availability_zones" {
-  value = aws_subnet.terraform-subnets.*.availability_zone
+  value = [for sub_net in aws_subnet.terraform-subnets : sub_net.availability_zone]
 }

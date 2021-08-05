@@ -6,7 +6,7 @@ resource "aws_key_pair" "terraform-key-pair" {
 resource "aws_security_group" "terraform-ec2" {
   name_prefix = "allow_ssh_http-"
   description = "Allow SSH and HTTP inbound traffic"
-  vpc_id      = var.vpc_id
+  vpc_id      = var.vpc.vpc_id
 
   ingress {
     description = "SSH from personal IP"
@@ -21,8 +21,7 @@ resource "aws_security_group" "terraform-ec2" {
     from_port        = 80
     to_port          = 80
     protocol         = "tcp"
-    cidr_blocks      = ["0.0.0.0/0"]
-    ipv6_cidr_blocks = ["::/0"]
+    security_groups = [var.lb_security_group_id]
   }
 
   egress {
@@ -43,13 +42,15 @@ resource "aws_security_group" "terraform-ec2" {
 }
 
 resource "aws_instance" "terraform-instance" {
+  count = var.instances_number
+
   ami           = var.ami_id
   instance_type = "t2.micro"
 
   key_name                    = aws_key_pair.terraform-key-pair.key_name
   associate_public_ip_address = true
   vpc_security_group_ids      = concat([aws_security_group.terraform-ec2.id], var.assigned_security_groups)
-  subnet_id                   = var.subnet_id
+  subnet_id                   = element(var.vpc.subnet_ids, count.index)
 
   user_data = var.user_data
 

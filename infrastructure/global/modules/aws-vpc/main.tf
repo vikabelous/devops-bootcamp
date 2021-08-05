@@ -28,20 +28,20 @@ resource "aws_route_table" "terraform-route-table" {
 }
 
 resource "aws_subnet" "terraform-subnets" {
-  count = "2"
+  for_each = toset(var.availability_zones)
 
   vpc_id            = aws_vpc.terraform-vpc.id
-  cidr_block        = cidrsubnet(aws_vpc.terraform-vpc.cidr_block, 8, count.index + 1)
-  availability_zone = data.aws_availability_zones.available.names[count.index]
+  cidr_block        = cidrsubnet(aws_vpc.terraform-vpc.cidr_block, 8, index(var.availability_zones, each.key) + 1)
+  availability_zone = each.key
 
   tags = {
-    Name = "${var.project_name}-public-${count.index}"
+    Name = "${var.project_name}-public-${index(var.availability_zones, each.key)}"
   }
 }
 
 resource "aws_route_table_association" "terraform-route-table-association" {
-  count = length(aws_subnet.terraform-subnets)
+  for_each = aws_subnet.terraform-subnets
 
-  subnet_id      = aws_subnet.terraform-subnets.*.id[count.index]
+  subnet_id      = each.value.id
   route_table_id = aws_route_table.terraform-route-table.id
 }

@@ -6,11 +6,6 @@ variable "project_name" {
   type    = string
 }
 
-variable "subnets_number" {
-  type    = number
-  default = 2
-}
-
-data "aws_availability_zones" "available" {
-  state = "available"
+variable "availability_zones" {
+  type = list(string)
 }

@@ -8,14 +8,18 @@ variable "ami_id" {
   description = "EC2 AMI ID"
 }
 
-variable "vpc_id" {
-  type = string
-  description = "VPC ID for EC2"
+variable "instances_number" {
+  type = number
+  description = "Number of EC2 to create"
 }
 
-variable "subnet_id" {
-  type = string
-  description = "Subnet ID for EC2"
+variable "vpc" {
+  type = object({
+    vpc_id     = string
+    subnet_ids = list(string)
+  })
+
+  description = "VPC information"
 }
 
 variable "ssh_cidr_block" {
@@ -27,6 +31,11 @@ variable "assigned_security_groups" {
   type = list(string)
   description = "Security groups for instance"
   default = []
+}
+
+variable "lb_security_group_id" {
+  type = string
+  description = "Load Balancer security group"
 }
 
 variable "user_data" {
