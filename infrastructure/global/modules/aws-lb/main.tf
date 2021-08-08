@@ -61,14 +61,19 @@ resource "aws_lb_target_group" "terraform-lb-target-group" {
   health_check {
     interval  = 5
     timeout   = 2
-    path      = "/cats/info"
+    path      = "/kittens/info"
   }
 }
 
-resource "aws_lb_target_group_attachment" "terraform-lb-target-group-attachment" {
+resource "aws_lb_target_group_attachment" "terraform-lb-tg-instance-attachment" {
   count = length(var.instance_ids)
 
   target_group_arn = aws_lb_target_group.terraform-lb-target-group.arn
   target_id        = element(var.instance_ids, count.index)
   port             = 80
+}
+
+resource "aws_autoscaling_attachment" "terraform-lb-asg-attachment" {
+  autoscaling_group_name = var.autoscaling_group_id
+  alb_target_group_arn   = aws_lb_target_group.terraform-lb-target-group.arn
 }

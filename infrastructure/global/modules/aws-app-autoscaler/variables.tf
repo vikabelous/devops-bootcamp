@@ -3,6 +3,10 @@ variable "project_name" {
   description = "Project name"
 }
 
+variable "lb_tg_arn" {
+  type = string
+}
+
 variable "vpc" {
   type = object({
     vpc_id     = string
@@ -12,10 +16,6 @@ variable "vpc" {
   description = "VPC information"
 }
 
-variable "instance_ids" {
-  type = list(string)
-}
-
-variable "autoscaling_group_id" {
+variable "aws_launch_template_name" {
   type = string
 }
